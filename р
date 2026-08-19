@@ -1,0 +1,580 @@
+-- BonyaHub | Mobile ESP
+-- Создано для изолированной симуляции
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+-- // Создание GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "BonyaHub"
+ScreenGui.Parent = CoreGui
+
+-- // Главное меню
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 400, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+
+-- // Закругление углов
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = MainFrame
+
+-- // Тень
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.Thickness = 2
+UIStroke.Transparency = 0.5
+UIStroke.Parent = MainFrame
+
+-- // Заголовок
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 45)
+TitleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = MainFrame
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 12)
+TitleCorner.Parent = TitleBar
+
+-- // Градиент заголовка
+local TitleGradient = Instance.new("UIGradient")
+TitleGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 0, 0))
+})
+TitleGradient.Rotation = 90
+TitleGradient.Parent = TitleBar
+
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(0.7, 0, 1, 0)
+TitleLabel.Position = UDim2.new(0, 15, 0, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "BonyaHub"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.Font = Enum.Font.GothamBlack
+TitleLabel.TextSize = 22
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.Parent = TitleBar
+
+-- // Кнопка X (закрыть меню)
+local CloseButton = Instance.new("TextButton")
+CloseButton.Size = UDim2.new(0, 32, 0, 32)
+CloseButton.Position = UDim2.new(1, -38, 0, 6)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+CloseButton.Text = "✕"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 16
+CloseButton.BorderSizePixel = 0
+CloseButton.Parent = TitleBar
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 8)
+CloseCorner.Parent = CloseButton
+
+-- // Вкладки
+local TabFrame = Instance.new("Frame")
+TabFrame.Size = UDim2.new(0.3, 0, 1, -45)
+TabFrame.Position = UDim2.new(0, 0, 0, 45)
+TabFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TabFrame.BorderSizePixel = 0
+TabFrame.Parent = MainFrame
+
+local TabCorner = Instance.new("UICorner")
+TabCorner.CornerRadius = UDim.new(0, 12)
+TabCorner.Parent = TabFrame
+
+-- // Кнопка Information
+local InfoTabButton = Instance.new("TextButton")
+InfoTabButton.Size = UDim2.new(0.9, 0, 0, 40)
+InfoTabButton.Position = UDim2.new(0.05, 0, 0, 10)
+InfoTabButton.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+InfoTabButton.Text = "Information"
+InfoTabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+InfoTabButton.Font = Enum.Font.GothamBold
+InfoTabButton.TextSize = 14
+InfoTabButton.BorderSizePixel = 0
+InfoTabButton.Parent = TabFrame
+
+local InfoTabCorner = Instance.new("UICorner")
+InfoTabCorner.CornerRadius = UDim.new(0, 8)
+InfoTabCorner.Parent = InfoTabButton
+
+-- // Кнопка Esp
+local EspTabButton = Instance.new("TextButton")
+EspTabButton.Size = UDim2.new(0.9, 0, 0, 40)
+EspTabButton.Position = UDim2.new(0.05, 0, 0, 60)
+EspTabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+EspTabButton.Text = "Esp"
+EspTabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+EspTabButton.Font = Enum.Font.GothamBold
+EspTabButton.TextSize = 14
+EspTabButton.BorderSizePixel = 0
+EspTabButton.Parent = TabFrame
+
+local EspTabCorner = Instance.new("UICorner")
+EspTabCorner.CornerRadius = UDim.new(0, 8)
+EspTabCorner.Parent = EspTabButton
+
+-- // Контент Information
+local InfoContent = Instance.new("Frame")
+InfoContent.Size = UDim2.new(0.7, 0, 1, -45)
+InfoContent.Position = UDim2.new(0.3, 0, 0, 45)
+InfoContent.BackgroundTransparency = 1
+InfoContent.Parent = MainFrame
+
+-- // Контент Esp
+local EspContent = Instance.new("Frame")
+EspContent.Size = UDim2.new(0.7, 0, 1, -45)
+EspContent.Position = UDim2.new(0.3, 0, 0, 45)
+EspContent.BackgroundTransparency = 1
+EspContent.Visible = false
+EspContent.Parent = MainFrame
+
+-- // Кнопка ESP
+local ESPButton = Instance.new("TextButton")
+ESPButton.Size = UDim2.new(0.8, 0, 0, 55)
+ESPButton.Position = UDim2.new(0.1, 0, 0, 60)
+ESPButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+ESPButton.Text = "ESP 👁️"
+ESPButton.TextColor3 = Color3.fromRGB(255, 80, 80)
+ESPButton.Font = Enum.Font.GothamBold
+ESPButton.TextSize = 18
+ESPButton.BorderSizePixel = 0
+ESPButton.Parent = EspContent
+
+local ESPCorner = Instance.new("UICorner")
+ESPCorner.CornerRadius = UDim.new(0, 10)
+ESPCorner.Parent = ESPButton
+
+-- // Градиент ESP кнопки
+local ESPGradient = Instance.new("UIGradient")
+ESPGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 40))
+})
+ESPGradient.Rotation = 90
+ESPGradient.Parent = ESPButton
+
+-- // Подпись статуса
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Size = UDim2.new(0.8, 0, 0, 25)
+StatusLabel.Position = UDim2.new(0.1, 0, 0, 130)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Text = "Статус: Выключен"
+StatusLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+StatusLabel.Font = Enum.Font.Gotham
+StatusLabel.TextSize = 14
+StatusLabel.TextXAlignment = Enum.TextXAlignment.Center
+StatusLabel.Parent = EspContent
+
+-- // Линия-стрелка раскрытия настроек
+local ToggleLineButton = Instance.new("TextButton")
+ToggleLineButton.Size = UDim2.new(0.8, 0, 0, 30)
+ToggleLineButton.Position = UDim2.new(0.1, 0, 0, 170)
+ToggleLineButton.BackgroundTransparency = 1
+ToggleLineButton.Text = "---------------------------------------------------------------------------⬇"
+ToggleLineButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleLineButton.Font = Enum.Font.GothamBold
+ToggleLineButton.TextSize = 12
+ToggleLineButton.BorderSizePixel = 0
+ToggleLineButton.Parent = EspContent
+
+-- // Страница настроек ESP
+local SettingsPage = Instance.new("Frame")
+SettingsPage.Size = UDim2.new(0.8, 0, 0, 0)
+SettingsPage.Position = UDim2.new(0.1, 0, 0, 200)
+SettingsPage.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+SettingsPage.BorderSizePixel = 0
+SettingsPage.ClipsDescendants = true
+SettingsPage.Parent = EspContent
+
+local SettingsCorner = Instance.new("UICorner")
+SettingsCorner.CornerRadius = UDim.new(0, 8)
+SettingsCorner.Parent = SettingsPage
+
+-- // Нижняя линия-стрелка
+local BottomLineButton = Instance.new("TextButton")
+BottomLineButton.Size = UDim2.new(0.8, 0, 0, 30)
+BottomLineButton.Position = UDim2.new(0.1, 0, 0, 200)
+BottomLineButton.BackgroundTransparency = 1
+BottomLineButton.Text = "---------------------------------------------------------------------------⬆"
+BottomLineButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+BottomLineButton.Font = Enum.Font.GothamBold
+BottomLineButton.TextSize = 12
+BottomLineButton.BorderSizePixel = 0
+BottomLineButton.Visible = false
+BottomLineButton.Parent = EspContent
+
+-- // Настройки внутри страницы
+local function CreateSetting(name, yPosition)
+    local SettingFrame = Instance.new("Frame")
+    SettingFrame.Size = UDim2.new(1, -20, 0, 35)
+    SettingFrame.Position = UDim2.new(0, 10, 0, yPosition)
+    SettingFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    SettingFrame.BorderSizePixel = 0
+    SettingFrame.Parent = SettingsPage
+
+    local SettingCorner = Instance.new("UICorner")
+    SettingCorner.CornerRadius = UDim.new(0, 6)
+    SettingCorner.Parent = SettingFrame
+
+    local NameLabel = Instance.new("TextLabel")
+    NameLabel.Size = UDim2.new(0.5, 0, 1, 0)
+    NameLabel.Position = UDim2.new(0, 10, 0, 0)
+    NameLabel.BackgroundTransparency = 1
+    NameLabel.Text = name
+    NameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    NameLabel.Font = Enum.Font.GothamBold
+    NameLabel.TextSize = 14
+    NameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    NameLabel.Parent = SettingFrame
+
+    local StatusButton = Instance.new("TextButton")
+    StatusButton.Size = UDim2.new(0.4, 0, 1, 0)
+    StatusButton.Position = UDim2.new(0.6, 0, 0, 0)
+    StatusButton.BackgroundTransparency = 1
+    StatusButton.Text = "Выключено"
+    StatusButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+    StatusButton.Font = Enum.Font.GothamBold
+    StatusButton.TextSize = 14
+    StatusButton.Parent = SettingFrame
+
+    return StatusButton
+end
+
+local NameSetting = CreateSetting("Имя", 10)
+local HealthSetting = CreateSetting("Хп", 55)
+local DistanceSetting = CreateSetting("Растояние", 100)
+local HighlightSetting = CreateSetting("Подсветка", 145)
+
+-- // Состояния настроек
+local Settings = {
+    Name = false,
+    Health = false,
+    Distance = false,
+    Highlight = false
+}
+
+-- // Функция переключения настройки
+local function ToggleSetting(button, settingName)
+    Settings[settingName] = not Settings[settingName]
+    if Settings[settingName] then
+        button.Text = "Включено"
+        button.TextColor3 = Color3.fromRGB(0, 255, 0)
+    else
+        button.Text = "Выключено"
+        button.TextColor3 = Color3.fromRGB(255, 0, 0)
+    end
+end
+
+NameSetting.MouseButton1Click:Connect(function()
+    ToggleSetting(NameSetting, "Name")
+end)
+
+HealthSetting.MouseButton1Click:Connect(function()
+    ToggleSetting(HealthSetting, "Health")
+end)
+
+DistanceSetting.MouseButton1Click:Connect(function()
+    ToggleSetting(DistanceSetting, "Distance")
+end)
+
+HighlightSetting.MouseButton1Click:Connect(function()
+    ToggleSetting(HighlightSetting, "Highlight")
+end)
+
+-- // Анимация раскрытия страницы
+local SettingsOpen = false
+
+local function ToggleSettingsPage()
+    SettingsOpen = not SettingsOpen
+    
+    if SettingsOpen then
+        ToggleLineButton.Visible = false
+        BottomLineButton.Visible = true
+        
+        local tween = TweenService:Create(SettingsPage, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0.8, 0, 0, 190)
+        })
+        tween:Play()
+        
+        local tween2 = TweenService:Create(BottomLineButton, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Position = UDim2.new(0.1, 0, 0, 390)
+        })
+        tween2:Play()
+    else
+        ToggleLineButton.Visible = true
+        BottomLineButton.Visible = false
+        
+        local tween = TweenService:Create(SettingsPage, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0.8, 0, 0, 0)
+        })
+        tween:Play()
+        
+        local tween2 = TweenService:Create(BottomLineButton, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Position = UDim2.new(0.1, 0, 0, 200)
+        })
+        tween2:Play()
+    end
+end
+
+ToggleLineButton.MouseButton1Click:Connect(ToggleSettingsPage)
+BottomLineButton.MouseButton1Click:Connect(ToggleSettingsPage)
+
+-- // Маленькая кнопка (появляется при закрытии меню)
+local MiniButton = Instance.new("TextButton")
+MiniButton.Size = UDim2.new(0, 90, 0, 40)
+MiniButton.Position = UDim2.new(0.5, -45, 0, 10)
+MiniButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MiniButton.Text = "BonyaHub"
+MiniButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MiniButton.Font = Enum.Font.GothamBold
+MiniButton.TextSize = 14
+MiniButton.BorderSizePixel = 0
+MiniButton.Visible = false
+MiniButton.Parent = ScreenGui
+
+local MiniCorner = Instance.new("UICorner")
+MiniCorner.CornerRadius = UDim.new(0, 8)
+MiniCorner.Parent = MiniButton
+
+-- // Градиент мини кнопки
+local MiniGradient = Instance.new("UIGradient")
+MiniGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 0, 0))
+})
+MiniGradient.Rotation = 90
+MiniGradient.Parent = MiniButton
+
+-- // Переменные состояния
+local ESPEnabled = false
+local ESPObjects = {}
+
+-- // Функция создания ESP для игрока
+local function CreateESP(player)
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "ESP_" .. player.Name
+    highlight.FillColor = Color3.fromRGB(255, 0, 0)
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+    highlight.FillTransparency = 0.5
+    highlight.OutlineTransparency = 0
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Enabled = false
+    highlight.Parent = nil
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "ESPLabel_" .. player.Name
+    billboard.Size = UDim2.new(0, 100, 0, 60)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Enabled = false
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Name = "NameLabel"
+    textLabel.Size = UDim2.new(1, 0, 0, 20)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = player.Name
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.Font = Enum.Font.GothamBold
+    textLabel.TextSize = 14
+    textLabel.TextStrokeTransparency = 0
+    textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    textLabel.Parent = billboard
+
+    local healthLabel = Instance.new("TextLabel")
+    healthLabel.Name = "HealthLabel"
+    healthLabel.Size = UDim2.new(1, 0, 0, 20)
+    healthLabel.Position = UDim2.new(0, 0, 0, 20)
+    healthLabel.BackgroundTransparency = 1
+    healthLabel.Text = "HP: 100"
+    healthLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    healthLabel.Font = Enum.Font.Gotham
+    healthLabel.TextSize = 12
+    healthLabel.TextStrokeTransparency = 0
+    healthLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    healthLabel.Parent = billboard
+
+    local distanceLabel = Instance.new("TextLabel")
+    distanceLabel.Name = "DistanceLabel"
+    distanceLabel.Size = UDim2.new(1, 0, 0, 20)
+    distanceLabel.Position = UDim2.new(0, 0, 0, 40)
+    distanceLabel.BackgroundTransparency = 1
+    distanceLabel.Text = "Dist: 0"
+    distanceLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+    distanceLabel.Font = Enum.Font.Gotham
+    distanceLabel.TextSize = 12
+    distanceLabel.TextStrokeTransparency = 0
+    distanceLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    distanceLabel.Parent = billboard
+
+    return highlight, billboard
+end
+
+-- // Обновление ESP
+local function UpdateESP()
+    for player, data in pairs(ESPObjects) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character:FindFirstChild("HumanoidRootPart") then
+            local character = player.Character
+            local rootPart = character.HumanoidRootPart
+            local humanoid = character.Humanoid
+
+            data.highlight.Parent = character
+            data.highlight.Enabled = ESPEnabled and Settings.Highlight
+
+            data.billboard.Parent = character
+            data.billboard.Enabled = ESPEnabled and (Settings.Name or Settings.Health or Settings.Distance)
+            data.billboard.Adornee = rootPart
+
+            -- Вычисление дистанции
+            local localRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local distance = 0
+            if localRoot then
+                distance = (rootPart.Position - localRoot.Position).Magnitude
+            end
+
+            -- Обновление текста
+            local nameLabel = data.billboard:FindFirstChild("NameLabel")
+            local healthLabel = data.billboard:FindFirstChild("HealthLabel")
+            local distanceLabel = data.billboard:FindFirstChild("DistanceLabel")
+
+            if nameLabel then
+                nameLabel.Visible = Settings.Name
+                nameLabel.Text = player.Name
+            end
+
+            if healthLabel then
+                healthLabel.Visible = Settings.Health
+                healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
+            end
+
+            if distanceLabel then
+                distanceLabel.Visible = Settings.Distance
+                distanceLabel.Text = "Dist: " .. math.floor(distance)
+            end
+        end
+    end
+end
+
+-- // Инициализация игроков
+local function InitializePlayers()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local highlight, billboard = CreateESP(player)
+            ESPObjects[player] = {
+                highlight = highlight,
+                billboard = billboard
+            }
+        end
+    end
+end
+
+-- // Обработчики событий
+Players.PlayerAdded:Connect(function(player)
+    if player ~= LocalPlayer then
+        local highlight, billboard = CreateESP(player)
+        ESPObjects[player] = {
+            highlight = highlight,
+            billboard = billboard
+        }
+    end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    if ESPObjects[player] then
+        ESPObjects[player].highlight:Destroy()
+        ESPObjects[player].billboard:Destroy()
+        ESPObjects[player] = nil
+    end
+end)
+
+-- // Переключение вкладок
+InfoTabButton.MouseButton1Click:Connect(function()
+    InfoContent.Visible = true
+    EspContent.Visible = false
+    InfoTabButton.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+    EspTabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+end)
+
+EspTabButton.MouseButton1Click:Connect(function()
+    InfoContent.Visible = false
+    EspContent.Visible = true
+    InfoTabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    EspTabButton.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+end)
+
+-- // Кнопка ESP
+ESPButton.MouseButton1Click:Connect(function()
+    ESPEnabled = not ESPEnabled
+    ESPButton.TextColor3 = ESPEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 80, 80)
+    ESPButton.Text = ESPEnabled and "ESP 👁️ ON" or "ESP 👁️"
+    StatusLabel.Text = ESPEnabled and "Статус: Включен" or "Статус: Выключен"
+    StatusLabel.TextColor3 = ESPEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(150, 150, 150)
+    UpdateESP()
+end)
+
+CloseButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    MiniButton.Visible = true
+end)
+
+MiniButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = true
+    MiniButton.Visible = false
+end)
+
+-- // Функция перетаскивания
+local function MakeDraggable(frame, button)
+    local dragging = false
+    local dragInput = nil
+    local dragStart = nil
+    local startPos = nil
+
+    local function updateDrag(input)
+        local delta = input.Position - dragStart
+        local newX = startPos.X.Offset + delta.X
+        local newY = startPos.Y.Offset + delta.Y
+        
+        -- Ограничение в пределах экрана
+        newX = math.clamp(newX, -frame.AbsoluteSize.X + 50, Camera.ViewportSize.X - 50)
+        newY = math.clamp(newY, 0, Camera.ViewportSize.Y - 50)
+        
+        frame.Position = UDim2.new(0, newX, 0, newY)
+    end
+
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+        end
+    end)
+
+    button.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+            updateDrag(input)
+        end
+    end)
+
+    button.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+end
+
+MakeDraggable(MainFrame, TitleBar)
+MakeDraggable(MiniButton, MiniButton)
+
+-- // Главный цикл
+RunService.RenderStepped:Connect(
